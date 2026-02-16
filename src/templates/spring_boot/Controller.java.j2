@@ -1,0 +1,48 @@
+package {{ package }};
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/{{ module.name }}")
+public class {{ entity.name }}Controller {
+    
+    @Autowired
+    private {{ entity.name }}Service service;
+    
+    @GetMapping("/{{ entity.name.lower() }}")
+    public ResponseEntity<List<{{ entity.name }}>> getAll() {
+        return ResponseEntity.ok(service.findAll());
+    }
+    
+    @GetMapping("/{{ entity.name.lower() }}/{id}")
+    public ResponseEntity<{{ entity.name }}> getById(@PathVariable UUID id) {
+        return service.findById(id)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+    }
+    
+    @PostMapping("/{{ entity.name.lower() }}")
+    public ResponseEntity<{{ entity.name }}> create(@RequestBody {{ entity.name }} entity) {
+        return ResponseEntity.ok(service.save(entity));
+    }
+    
+    @PutMapping("/{{ entity.name.lower() }}/{id}")
+    public ResponseEntity<{{ entity.name }}> update(
+        @PathVariable UUID id,
+        @RequestBody {{ entity.name }} entity
+    ) {
+        return service.findById(id)
+            .map(existing -> ResponseEntity.ok(service.save(entity)))
+            .orElse(ResponseEntity.notFound().build());
+    }
+    
+    @DeleteMapping("/{{ entity.name.lower() }}/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        service.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+}

@@ -1,0 +1,103 @@
+{
+  "specVersion": "1.0.0",
+  "project": {
+    "name": "ecommerce-api",
+    "description": "E-commerce backend service",
+    "version": "1.0.0",
+    "base_package": "com.example.ecommerce",
+    "port": 8080
+  },
+  "decompositionPolicy": "advisory",
+  "modules": [
+    {
+      "name": "catalog",
+      "description": "Product catalog management",
+      "entities": [
+        {
+          "name": "Category",
+          "fields": [
+            {"name": "id", "type": "uuid", "primary": true},
+            {"name": "name", "type": "string", "nullable": false, "max_length": 100},
+            {"name": "description", "type": "text", "nullable": true},
+            {"name": "parent_id", "type": "uuid", "nullable": true}
+          ]
+        },
+        {
+          "name": "Product",
+          "fields": [
+            {"name": "id", "type": "uuid", "primary": true},
+            {"name": "name", "type": "string", "nullable": false, "max_length": 200},
+            {"name": "description", "type": "text", "nullable": true},
+            {"name": "price", "type": "float", "nullable": false},
+            {"name": "stock", "type": "integer", "nullable": false, "default": 0},
+            {"name": "category_id", "type": "uuid", "nullable": false},
+            {"name": "created_at", "type": "datetime", "nullable": false}
+          ]
+        }
+      ],
+      "endpoints": [
+        {"path": "/categories", "method": "GET", "handler": "getAllCategories", "response_body": "Category"},
+        {"path": "/categories", "method": "POST", "handler": "createCategory", "request_body": "Category", "response_body": "Category"},
+        {"path": "/products", "method": "GET", "handler": "getAllProducts", "response_body": "Product"},
+        {"path": "/products/{id}", "method": "GET", "handler": "getProduct", "response_body": "Product", "path_params": ["id"]},
+        {"path": "/products", "method": "POST", "handler": "createProduct", "request_body": "Product", "response_body": "Product"}
+      ]
+    },
+    {
+      "name": "order",
+      "description": "Order management",
+      "entities": [
+        {
+          "name": "Order",
+          "fields": [
+            {"name": "id", "type": "uuid", "primary": true},
+            {"name": "user_id", "type": "uuid", "nullable": false},
+            {"name": "status", "type": "enum", "enum_values": ["pending", "confirmed", "shipped", "delivered", "cancelled"], "nullable": false},
+            {"name": "total_amount", "type": "float", "nullable": false},
+            {"name": "created_at", "type": "datetime", "nullable": false}
+          ]
+        },
+        {
+          "name": "OrderItem",
+          "fields": [
+            {"name": "id", "type": "uuid", "primary": true},
+            {"name": "order_id", "type": "uuid", "nullable": false},
+            {"name": "product_id", "type": "uuid", "nullable": false},
+            {"name": "quantity", "type": "integer", "nullable": false},
+            {"name": "price", "type": "float", "nullable": false}
+          ]
+        }
+      ],
+      "endpoints": [
+        {"path": "/orders", "method": "POST", "handler": "createOrder", "request_body": "Order", "response_body": "Order"},
+        {"path": "/orders/{id}", "method": "GET", "handler": "getOrder", "response_body": "Order", "path_params": ["id"]},
+        {"path": "/orders", "method": "GET", "handler": "getUserOrders", "response_body": "Order", "query_params": ["user_id"]}
+      ]
+    },
+    {
+      "name": "customer",
+      "description": "Customer management",
+      "entities": [
+        {
+          "name": "Customer",
+          "fields": [
+            {"name": "id", "type": "uuid", "primary": true},
+            {"name": "email", "type": "string", "unique": true, "nullable": false, "max_length": 255},
+            {"name": "name", "type": "string", "nullable": false, "max_length": 100},
+            {"name": "phone", "type": "string", "nullable": true, "max_length": 20},
+            {"name": "created_at", "type": "datetime", "nullable": false}
+          ]
+        }
+      ],
+      "endpoints": [
+        {"path": "/customers", "method": "POST", "handler": "createCustomer", "request_body": "Customer", "response_body": "Customer"},
+        {"path": "/customers/{id}", "method": "GET", "handler": "getCustomer", "response_body": "Customer", "path_params": ["id"]}
+      ]
+    }
+  ],
+  "metadata": {
+    "author": "Backend Factory",
+    "created_at": "2025-02-16",
+    "tags": ["ecommerce", "catalog", "orders"]
+  }
+}

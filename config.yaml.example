@@ -1,0 +1,29 @@
+# Backend Factory Configuration
+
+# Decomposition policy
+# Options: disabled | advisory | enforced
+decompositionPolicy: advisory
+
+# Backend settings
+backend:
+  default: spring-boot
+  options:
+    - spring-boot
+    - python
+
+# Output format
+outputFormat:
+  indent: 2
+  lineEnding: lf  # lf | crlf
+
+# Validation settings
+validation:
+  strictMode: true
+  maxNestingDepth: 4
+  warnOnComplexity: true
+
+# Generation settings
+generation:
+  addComments: true
+  addExamples: false
+  overwriteExisting: false

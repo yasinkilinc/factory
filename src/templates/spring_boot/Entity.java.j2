@@ -1,0 +1,27 @@
+package {{ package }};
+
+{% for import in imports %}
+import {{ import }};
+{% endfor %}
+
+@Entity
+@Table(name = "{{ entity.table_name or entity.name.lower() }}")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class {{ entity.name }} {
+    
+    {% for field in entity.fields %}
+    {% if field.primary %}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    {% endif %}
+    {% if field.unique %}
+    @Column(unique = true{% if not field.nullable %}, nullable = false{% endif %})
+    {% elif not field.nullable and not field.primary %}
+    @Column(nullable = false)
+    {% endif %}
+    private {{ field.type | java_type }} {{ field.name }};
+    
+    {% endfor %}
+}

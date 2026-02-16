@@ -1,0 +1,104 @@
+{
+  "specVersion": "1.0.0",
+  "project": {
+    "name": "user-service",
+    "description": "Simple user management service",
+    "version": "1.0.0",
+    "base_package": "com.example.userservice",
+    "port": 8080
+  },
+  "decompositionPolicy": "advisory",
+  "modules": [
+    {
+      "name": "user",
+      "description": "User management module",
+      "entities": [
+        {
+          "name": "User",
+          "description": "User entity",
+          "fields": [
+            {
+              "name": "id",
+              "type": "uuid",
+              "primary": true,
+              "description": "User unique identifier"
+            },
+            {
+              "name": "email",
+              "type": "string",
+              "unique": true,
+              "nullable": false,
+              "max_length": 255,
+              "description": "User email address"
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "nullable": false,
+              "max_length": 100,
+              "description": "User full name"
+            },
+            {
+              "name": "age",
+              "type": "integer",
+              "nullable": true,
+              "description": "User age"
+            },
+            {
+              "name": "created_at",
+              "type": "datetime",
+              "nullable": false,
+              "description": "Creation timestamp"
+            }
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "path": "/users",
+          "method": "GET",
+          "handler": "getAllUsers",
+          "response_body": "User",
+          "description": "Get all users"
+        },
+        {
+          "path": "/users/{id}",
+          "method": "GET",
+          "handler": "getUserById",
+          "response_body": "User",
+          "path_params": ["id"],
+          "description": "Get user by ID"
+        },
+        {
+          "path": "/users",
+          "method": "POST",
+          "handler": "createUser",
+          "request_body": "User",
+          "response_body": "User",
+          "description": "Create new user"
+        },
+        {
+          "path": "/users/{id}",
+          "method": "PUT",
+          "handler": "updateUser",
+          "request_body": "User",
+          "response_body": "User",
+          "path_params": ["id"],
+          "description": "Update user"
+        },
+        {
+          "path": "/users/{id}",
+          "method": "DELETE",
+          "handler": "deleteUser",
+          "path_params": ["id"],
+          "description": "Delete user"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "author": "Backend Factory",
+    "created_at": "2025-02-16",
+    "tags": ["example", "crud", "user-management"]
+  }
+}

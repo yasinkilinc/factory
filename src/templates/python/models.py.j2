@@ -1,0 +1,42 @@
+"""
+Models for {{ module.name }} module
+"""
+
+from pydantic import BaseModel, Field
+from typing import Optional
+from uuid import UUID
+from datetime import datetime, date
+
+{% for entity in module.entities %}
+
+class {{ entity.name }}Base(BaseModel):
+    """Base schema for {{ entity.name }}"""
+    {%- for field in entity.fields %}
+    {%- if not field.primary %}
+    {{ field.name }}: {% if field.nullable %}Optional[{% endif %}{{ field.type | python_type }}{% if field.nullable %}]{% endif %}{% if field.default is not none %} = {{ field.default }}{% endif %}
+    {%- endif %}
+    {%- endfor %}
+
+
+class {{ entity.name }}Create({{ entity.name }}Base):
+    """Schema for creating {{ entity.name }}"""
+    pass
+
+
+class {{ entity.name }}Update({{ entity.name }}Base):
+    """Schema for updating {{ entity.name }}"""
+    pass
+
+
+class {{ entity.name }}({{ entity.name }}Base):
+    """Schema for {{ entity.name }} with ID"""
+    {%- for field in entity.fields %}
+    {%- if field.primary %}
+    {{ field.name }}: UUID
+    {%- endif %}
+    {%- endfor %}
+    
+    class Config:
+        from_attributes = True
+
+{%- endfor %}

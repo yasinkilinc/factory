@@ -1,0 +1,47 @@
+"""
+Services for {{ module.name }} module
+"""
+
+from typing import List, Optional
+from uuid import UUID
+from .repositories import {% for entity in module.entities %}{{ entity.name.lower() }}_repository{% if not loop.last %}, {% endif %}{% endfor %}
+
+from .models import {% for entity in module.entities %}{{ entity.name }}, {{ entity.name }}Create, {{ entity.name }}Update{% if not loop.last %}, {% endif %}{% endfor %}
+
+
+{% for entity in module.entities %}
+
+class {{ entity.name }}Service:
+    """Service for {{ entity.name }}"""
+    
+    def __init__(self):
+        self.repository = {{ entity.name.lower() }}_repository
+    
+    def get_all(self) -> List[{{ entity.name }}]:
+        """Get all {{ entity.name }} entities"""
+        items = self.repository.find_all()
+        return [{{ entity.name }}(**item) for item in items]
+    
+    def get_by_id(self, id: UUID) -> Optional[{{ entity.name }}]:
+        """Get {{ entity.name }} by ID"""
+        item = self.repository.find_by_id(id)
+        return {{ entity.name }}(**item) if item else None
+    
+    def create(self, data: {{ entity.name }}Create) -> {{ entity.name }}:
+        """Create new {{ entity.name }}"""
+        item = self.repository.create(data.model_dump())
+        return {{ entity.name }}(**item)
+    
+    def update(self, id: UUID, data: {{ entity.name }}Update) -> Optional[{{ entity.name }}]:
+        """Update {{ entity.name }}"""
+        item = self.repository.update(id, data.model_dump(exclude_unset=True))
+        return {{ entity.name }}(**item) if item else None
+    
+    def delete(self, id: UUID) -> bool:
+        """Delete {{ entity.name }}"""
+        return self.repository.delete(id)
+
+
+{{ entity.name.lower() }}_service = {{ entity.name }}Service()
+
+{% endfor %}
