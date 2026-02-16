@@ -1,0 +1,77 @@
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { {{ entity.name }}Api } from '../../api/client';
+import { Edit2, Trash2 } from 'lucide-react';
+
+export const {{ entity.name }}List: React.FC = () => {
+  const [items, setItems] = useState<any[]>([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    loadItems();
+  }, []);
+
+  const loadItems = async () => {
+    try {
+      const data = await {{ entity.name }}Api.getAll();
+      setItems(data);
+    } catch (error) {
+      console.error('Failed to load items', error);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm('Are you sure you want to delete this item?')) {
+      try {
+        await {{ entity.name }}Api.delete(id);
+        loadItems();
+      } catch (error) {
+        console.error('Failed to delete item', error);
+      }
+    }
+  };
+
+  return (
+    <div className="bg-white shadow rounded-lg overflow-hidden">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            {% for field in entity.fields %}
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              {{ field.name }}
+            </th>
+            {% endfor %}
+            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {items.map((item) => (
+            <tr key={item.id}>
+              {% for field in entity.fields %}
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {String(item.{{ field.name }})}
+              </td>
+              {% endfor %}
+              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <button 
+                  onClick={() => navigate(`edit/${item.id}`)}
+                  className="text-blue-600 hover:text-blue-900 mr-4"
+                >
+                  <Edit2 size={16} />
+                </button>
+                <button 
+                  onClick={() => handleDelete(item.id)}
+                  className="text-red-600 hover:text-red-900"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};

@@ -1,0 +1,76 @@
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { {{ entity.name }}Api } from '../../api/client';
+
+export const {{ entity.name }}Form: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState<any>({});
+
+  useEffect(() => {
+    if (id) {
+      loadItem();
+    }
+  }, [id]);
+
+  const loadItem = async () => {
+    try {
+      const data = await {{ entity.name }}Api.getOne(id!);
+      setFormData(data);
+    } catch (error) {
+      console.error('Failed to load item', error);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (id) {
+        await {{ entity.name }}Api.update(id, formData);
+      } else {
+        await {{ entity.name }}Api.create(formData);
+      }
+      navigate('/{{ entity.name | lower }}');
+    } catch (error) {
+      console.error('Failed to save item', error);
+    }
+  };
+
+  return (
+    <div className="bg-white shadow rounded-lg p-6 max-w-2xl">
+      <h3 className="text-lg font-medium text-gray-900 mb-6">
+        {id ? 'Edit' : 'Create'} {{ entity.name }}
+      </h3>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {% for field in entity.fields %}
+        {% if not field.primary %}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">{{ field.name }}</label>
+          <input
+            type="{% if field.type == 'integer' or field.type == 'float' %}number{% elif field.type == 'boolean' %}checkbox{% else %}text{% endif %}"
+            value={formData.{{ field.name }} || ''}
+            onChange={(e) => setFormData({ ...formData, {{ field.name }}: e.target.value })}
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          />
+        </div>
+        {% endif %}
+        {% endfor %}
+        <div className="flex justify-end space-x-3 mt-6">
+          <button
+            type="button"
+            onClick={() => navigate('/{{ entity.name | lower }}')}
+            className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-blue-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};

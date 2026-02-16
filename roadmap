@@ -1,0 +1,209 @@
+Genel Hedef
+
+Kullanıcı: Tek kullanıcı (sen)
+
+Amaç: Deterministic, güvenilir, tek başına çalışabilen backend code generator.
+
+Opsiyonel: Microservice decomposition, FE üretimi, multi-platform opsiyonları.
+
+Önemli Prensip: Deterministic pipeline → AI tahminleri yok → Fail-fast validator → Spec-driven.
+
+V1 — Backend-Only Intelligent Factory
+
+Amaç: Minimal, stabil, deterministic çekirdek.
+
+Scope
+
+Tek kullanıcı için çalışır
+
+Nested JSON spec (max 4 seviye)
+
+Modular monolith backend üretimi
+
+Deterministic validator
+
+Optional decomposition policy
+
+Spec version zorunlu (specVersion)
+
+Metadata opsiyonel (sadece opsiyonel debug / trace)
+
+Deterministic JSON contract üretilebilir (GPT ile dönüşüm opsiyonel)
+
+Output
+
+JSON spec validate edilmiş
+
+Modular monolith Spring Boot / Python template code
+
+OpenAPI contract üretimi
+
+Validator raporu (fail listesi)
+
+Risk / decomposition advisory raporu (opsiyonel)
+
+Kritik Prensipler
+
+AI inference yok
+
+Deterministic pipeline
+
+Fail fast: validator hatasında üretim yok
+
+Spec version kontrolü zorunlu
+
+Decomposition policy: disabled | advisory | enforced (V1 default: disabled)
+
+Microservice üretimi opsiyonel, sadece rapor
+
+Teknoloji Önerisi
+
+Python 3.11+ (hızlı prototip, bakımı kolay)
+
+Pydantic / jsonschema validator
+
+Typer CLI
+
+Jinja2 template backend code generation
+
+Git opsiyonel spec versiyonlama için
+
+V2 — Contract-Driven Fullstack
+
+Amaç: Frontend üretimi + BE-FE consistency
+
+Scope
+
+OpenAPI authoritative source → BE-FE generator tek kaynak
+
+React frontend production template üretimi
+
+Automatic API client generation (FE → BE contract uyumlu)
+
+BE-FE consistency validator
+
+Microservice decomposition yine advisory mod
+
+Spec format evrimlenebilir, backward compatible
+
+Output
+
+Modular monolith backend
+
+React frontend + API client
+
+Contract-driven validation raporu
+
+Optional decomposition advisory raporu
+
+Teknoloji / Opsiyonel
+
+FE template: React + TS
+
+Automatic API client: OpenAPI generator
+
+Validator: BE-FE consistency check
+
+V3 — Architecture Expansion
+
+Amaç: Gerçek microservice üretimi ve büyük sistemleri destekleme
+
+Scope
+
+Microservice generator
+
+Service decomposition engine (policy: advisory / enforced)
+
+Infrastructure templates (Docker, API gateway)
+
+Complexity score (coupling, transactions, domain complexity)
+
+Deployment önerisi (modular monolith vs microservice)
+
+FE opsiyonları artık genişletilmiş (API client + multiple module support)
+
+Output
+
+Microservice candidate listesi
+
+Deployment templates
+
+Full backend modules (split yapılabilir)
+
+Optional advisory / enforced decomposition
+
+Complexity score raporu
+
+Kritik İlke
+
+Deterministic core bozulmaz
+
+Split opsiyonu zorunlu değil → sadece advisory veya enforced
+
+V4 — Multi-Platform & Advanced Intelligence
+
+Amaç: Multi-platform ürünler ve ileri karar destek
+
+Scope
+
+Web + Mobile + Desktop code template üretimi
+
+Platform trade-off analizi (web vs mobile vs desktop)
+
+Deployment strateji önerileri (CI/CD pipelines, container vs VM vs serverless)
+
+Advanced decision engine (complexity + performance + scalability)
+
+Optional: AI-based architecture suggestion (V1 deterministic core üzerine eklenen layer)
+
+Output
+
+Multi-platform ready code
+
+Deployment & pipeline recommendations
+
+Microservice / monolith advisory
+
+Advanced scoring & risk analysis
+
+Kritik İlke
+
+Deterministic core korunur
+
+AI öneri layer sadece opsiyonel
+
+Fail-fast ve versioned spec her zaman geçerli
+
+Özet Tablo
+Versiyon	Scope	Output	Key Principles
+V1	BE-only, deterministic	Validated JSON spec, monolith backend, OpenAPI	Fail-fast, specVersion, nested 4-level, decompositionPolicy (disabled)
+V2	Fullstack	React FE, API client, BE-FE consistency	Contract-driven, deterministic core, optional decomposition advisory
+V3	Architecture expansion	Microservice candidates, infra templates, complexity score	Optional microservice generation, advisory/enforced policy, deterministic core
+V4	Multi-platform & advanced	Web/Mobile/Desktop code, deployment strategy, advanced scoring	Optional AI layer, deterministic core, multi-platform support
+V1–V4 Mimari Omurga
+
+Spec → Deterministic Compiler
+
+Validator → Fail-fast, strict
+
+Optional Decomposition → advisory/enforced
+
+Code Generator → Template-driven
+
+Spec Versioning → SemVer (major/minor/patch)
+
+Future-proof → V2–V4 opsiyonları sadece üstüne eklenir
+
+🎯 Özet
+
+Tek kullanıcı odaklı, over-engineering yok
+
+Deterministic pipeline en kritik bileşen
+
+Microservice opsiyonel, sadece advisory/enforced rapor
+
+Nested JSON 4 seviye → domain modularity
+
+Spec version → backward compatibility
+
+Metadata opsiyonel, debug/tracking için

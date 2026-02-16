@@ -1,0 +1,30 @@
+import React, { useState } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import { {{ entity.name }}List } from '../components/{{ entity.name }}/{{ entity.name }}List';
+import { {{ entity.name }}Form } from '../components/{{ entity.name }}/{{ entity.name }}Form';
+import { Plus } from 'lucide-react';
+
+export const {{ entity.name }}Page: React.FC = () => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="p-8">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-gray-800">{{ entity.name }} Management</h2>
+        <button 
+          onClick={() => navigate('new')}
+          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+        >
+          <Plus size={18} className="mr-2" />
+          Add {{ entity.name }}
+        </button>
+      </div>
+
+      <Routes>
+        <Route index element={<{{ entity.name }}List />} />
+        <Route path="new" element={<{{ entity.name }}Form />} />
+        <Route path="edit/:id" element={<{{ entity.name }}Form />} />
+      </Routes>
+    </div>
+  );
+};

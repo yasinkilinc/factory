@@ -1,0 +1,32 @@
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: '/api',
+});
+
+{% for module in modules %}
+// Module: {{ module.name }}
+{% for entity in module.entities %}
+export const {{ entity.name }}Api = {
+  getAll: async () => {
+    const response = await api.get('/{{ module.name }}/{{ entity.name | lower }}');
+    return response.data;
+  },
+  getOne: async (id: string) => {
+    const response = await api.get(`/{{ module.name }}/{{ entity.name | lower }}/${id}`);
+    return response.data;
+  },
+  create: async (data: any) => {
+    const response = await api.post('/{{ module.name }}/{{ entity.name | lower }}', data);
+    return response.data;
+  },
+  update: async (id: string, data: any) => {
+    const response = await api.put(`/{{ module.name }}/{{ entity.name | lower }}/${id}`, data);
+    return response.data;
+  },
+  delete: async (id: string) => {
+    await api.delete(`/{{ module.name }}/{{ entity.name | lower }}/${id}`);
+  },
+};
+{% endfor %}
+{% endfor %}

@@ -199,3 +199,72 @@ class TestE2EIntegration:
         # Both should have their main entry points
         assert (spring_dir / "pom.xml").exists()
         assert (python_dir / "src" / "main.py").exists()
+
+class TestFrontendReactE2E:
+    """E2E tests for React frontend code generation"""
+    
+    @pytest.fixture
+    def generated_frontend_project(self, tmp_path):
+        """Generate a React frontend project for testing"""
+        spec_file = "examples/simple_crud.json"
+        output_dir = tmp_path / "fullstack-output"
+        
+        result = subprocess.run(
+            [
+                "python3", "cli.py", "generate",
+                spec_file,
+                "--output", str(output_dir),
+                "--backend", "python",
+                "--frontend", "react",
+                "--force"
+            ],
+            capture_output=True,
+            text=True,
+            cwd=Path.cwd()
+        )
+        
+        assert result.returncode == 0, f"Generation failed: {result.stderr}"
+        return output_dir / "frontend"
+    
+    def test_frontend_project_structure(self, generated_frontend_project):
+        """Test that React project has correct structure"""
+        project_dir = generated_frontend_project
+        
+        assert (project_dir / "package.json").exists()
+        assert (project_dir / "tsconfig.json").exists()
+        assert (project_dir / "src" / "App.tsx").exists()
+        assert (project_dir / "src" / "api" / "client.ts").exists()
+    
+    def test_frontend_api_client_content(self, generated_frontend_project):
+        """Test that API client contains expected entities"""
+        api_client = generated_frontend_project / "src" / "api" / "client.ts"
+        content = api_client.read_text()
+        
+        # Check if UserApi is generated
+        assert "export const UserApi" in content
+        assert "getAll" in content
+        assert "/user/user" in content
+
+class TestConsistencyE2E:
+    """E2E tests for BE-FE consistency validator"""
+    
+    def test_consistency_validator_success(self, tmp_path):
+        """Test that consistency validator passes for correct generation"""
+        spec_file = "examples/simple_crud.json"
+        output_dir = tmp_path / "valid-fullstack"
+        
+        # Generate fullstack
+        subprocess.run(
+            ["python3", "cli.py", "generate", spec_file, "--output", str(output_dir), 
+             "--backend", "python", "--frontend", "react", "--force"],
+            capture_output=True, text=True, cwd=Path.cwd()
+        )
+        
+        from src.validators import ConsistencyValidator
+        from src.validators import validate_spec
+        
+        _, result = validate_spec(spec_file)
+        is_consistent, errors = ConsistencyValidator.validate(result.spec, str(output_dir))
+        
+        assert is_consistent
+        assert len(errors) == 0

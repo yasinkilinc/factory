@@ -1,0 +1,41 @@
+{
+  "specVersion": "1.0",
+  "entities": [
+    {
+      "name": "User",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true
+        },
+        {
+          "name": "email",
+          "type": "string"
+        },
+        {
+          "name": "created_at",
+          "type": "datetime"
+        }
+      ]
+    },
+    {
+      "name": "Post",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true
+        },
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "author_id",
+          "type": "uuid"
+        }
+      ]
+    }
+  ]
+}

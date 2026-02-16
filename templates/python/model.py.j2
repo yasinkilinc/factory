@@ -1,0 +1,4 @@
+class {{ entity.name }}:
+{% for f in entity.fields %}
+    {{ f.name }}: {{ "str" if f.type=="string" else "int" if f.type=="int" else "UUID" if f.type=="uuid" else "datetime" }}
+{% endfor %}

@@ -12,7 +12,7 @@ from rich.table import Table
 from rich import print as rprint
 
 from src.validators import validate_spec
-from src.generators import BackendGenerator, OpenAPIGenerator
+from src.generators import BackendGenerator, OpenAPIGenerator, FrontendGenerator
 from src.analyzer import DecompositionAdvisor
 from src.models import SpecModel
 
@@ -68,6 +68,12 @@ def generate(
         "-b",
         help="Backend type: spring-boot | python"
     ),
+    frontend: str = typer.Option(
+        None,
+        "--frontend",
+        "-fe",
+        help="Frontend type: react"
+    ),
     force: bool = typer.Option(False, "--force", "-f", help="Overwrite existing files")
 ):
     """
@@ -102,14 +108,25 @@ def generate(
             raise typer.Exit(code=0)
     
     # Step 3: Generate code
-    console.print(f"\n[bold]Step 2:[/bold] Generating {backend} code...")
-    
     try:
-        generator = BackendGenerator(backend_type=backend)
-        generator.generate(result.spec, output)
-        console.print(f"[green]✓[/green] Code generated: {output}")
+        if backend:
+            console.print(f"\n[bold]Step 2:[/bold] Generating {backend} backend code...")
+            generator = BackendGenerator(backend_type=backend)
+            generator.generate(result.spec, output)
+            console.print(f"[green]✓[/green] Backend code generated in: {output}")
+        
+        if frontend:
+            fe_output = Path(output) / "frontend"
+            console.print(f"\n[bold]Step 3:[/bold] Generating {frontend} frontend code...")
+            fe_generator = FrontendGenerator(frontend_type=frontend)
+            fe_generator.generate(result.spec, str(fe_output))
+            console.print(f"[green]✓[/green] Frontend code generated in: {fe_output}")
+            
     except Exception as e:
         console.print(f"\n[bold red]❌ Generation failed:[/bold red] {str(e)}")
+        import traceback
+        if console.is_terminal:
+            console.print(traceback.format_exc())
         raise typer.Exit(code=1)
     
     console.print(f"\n[bold green]✓ Generation completed successfully[/bold green]\n")

@@ -1,0 +1,11 @@
+{% set has_uuid = entity.fields | selectattr("type","equalto","uuid") | list | length > 0 %}
+{% if has_uuid %}
+import java.util.UUID;
+{% endif %}
+import java.time.LocalDateTime;
+
+public class {{ entity.name }} {
+{% for f in entity.fields %}
+    public {{ "String" if f.type=="string" else "int" if f.type=="int" else "UUID" if f.type=="uuid" else "LocalDateTime" }} {{ f.name }};
+{% endfor %}
+}
